@@ -1,15 +1,21 @@
 {
   "name": "ocaml-flavored-politico",
   "version": "0.1.0",
-  "sources": {
+  "sources": [
+    {
       "dir": "src",
-      "subdirs" : true
-  },
+      "subdirs": true
+    },
+    {
+      "dir": "__tests__",
+      "type": "dev"
+    }
+  ],
   "package-specs": {
     "module": "commonjs",
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": [
-   ]
+  "bs-dependencies": [],
+  "bs-dev-dependencies": ["@glennsl/bs-jest"]
 }
