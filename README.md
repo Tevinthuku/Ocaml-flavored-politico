@@ -17,6 +17,12 @@ The mantra for this repo is
     If types don't match don't compile
 ```
 
+# Global Setup
+
+[NodeJs Installation](https://nodejs.org/en/download/)
+
+[Global ReasonML installation](https://reasonml.github.io/docs/en/installation)
+
 ## Setting up the repo.
 
 ### 1. Clone the repo
@@ -56,3 +62,7 @@ yarn watch
 ### 5. Editor
 
 If you use `vscode`, Press `Windows + Shift + B` it will build automatically
+
+or install
+
+[Jared Forsyth's VSCode extension](https://github.com/jaredly/reason-language-server)
