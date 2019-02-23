@@ -1,6 +1,6 @@
 
 
-let () = Js.log "Hello, BuckleScript"
+let () = Js.log "Hello, There world
 
 let sum lst = 
     let rec aux acc  = function
