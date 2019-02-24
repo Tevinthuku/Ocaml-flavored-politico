@@ -65,4 +65,12 @@ If you use `vscode`, Press `Windows + Shift + B` it will build automatically
 
 or install
 
+### 6. Signature files.
+
+If you want to generate signature files run
+
+```
+source generatesiggy.sh
+```
+
 [Jared Forsyth's VSCode extension](https://github.com/jaredly/reason-language-server)
