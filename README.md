@@ -1,5 +1,7 @@
 ## Ocaml-Flavored-Politico
 
+[![Build Status](https://travis-ci.org/Tevinthuku/Ocaml-flavored-politico.svg?branch=develop)](https://travis-ci.org/Tevinthuku/Ocaml-flavored-politico)
+
 This is the same Politico we built in bootcamp session at Andela Cycle 37
 The original Version was built in python, but I will be building it in Ocaml.
 
@@ -64,5 +66,13 @@ yarn watch
 If you use `vscode`, Press `Windows + Shift + B` it will build automatically
 
 or install
+
+### 6. Signature files.
+
+If you want to generate signature files run
+
+```
+source generatesiggy.sh
+```
 
 [Jared Forsyth's VSCode extension](https://github.com/jaredly/reason-language-server)
