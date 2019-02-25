@@ -1,0 +1,1 @@
+external stringify: 'a -> string = "" [@@bs.val][@@bs.scope "JSON"]
