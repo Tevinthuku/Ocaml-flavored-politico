@@ -1,9 +1,24 @@
 type http;
 
+open Utils;
+
 module Request = {
   type t;
   [@bs.get] external url: t => string = "";
   [@bs.get] external method_: t => string = "method";
+
+  [@bs.send]
+  external on:
+    (
+      t,
+      [@bs.string] [
+        | [@bs.as "end"] `end_(unit => unit)
+        | `data(string => unit)
+      ]
+    ) =>
+    unit =
+    "";
+  let isMethod = (request, meth) => method(request) == meth;
 };
 
 module Response = {
@@ -14,6 +29,10 @@ module Response = {
     setHeader(response, header, value);
     response;
   };
+  let jsonify = (value: 'a, response: t) =>
+    response
+    |> setHeader("Content-Type", "application/json")
+    |> end_(stringify(value));
 };
 
 [@bs.module "http"]
