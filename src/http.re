@@ -25,13 +25,20 @@ module Response = {
   type t;
   [@bs.send.pipe: t] external end_: 'a => unit = "end";
   [@bs.send] external setHeader: (t, string, string) => unit = "";
+  [@bs.send] external writeHead: (t, int) => unit = "";
   let setHeader = (header: string, value: string, response: t) => {
     setHeader(response, header, value);
     response;
   };
-  let jsonify = (value: 'a, response: t) =>
+
+  let writeHead = (status: int, response: t) => {
+    writeHead(response, status);
+    response;
+  };
+  let jsonify = (status, value: 'a, response: t) =>
     response
     |> setHeader("Content-Type", "application/json")
+    |> writeHead(status)
     |> end_(stringify(value));
 };
 
