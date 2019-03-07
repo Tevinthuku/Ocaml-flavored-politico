@@ -20,7 +20,48 @@ let views = ((req, res)) =>
             _ =>
               switch (Js.Json.parseExn(data^)) {
               | value =>
-                offices := List.append([value], offices^);
+                let myMap = Js.Dict.empty();
+
+                switch (Js.Json.classify(value)) {
+                | Js.Json.JSONObject(a) =>
+                  switch (Js.Dict.get(a, "name")) {
+                  | Some(name) => Js.Dict.set(myMap, "name", name)
+                  | _ =>
+                    Response.(
+                      res
+                      |> jsonify(
+                           400,
+                           {"status": 400, "message": "Name is not provided"},
+                         )
+                    )
+                  };
+
+                  switch (Js.Dict.get(a, "type")) {
+                  | Some(type_) => Js.Dict.set(myMap, "type", type_)
+                  | _ =>
+                    Response.(
+                      res
+                      |> jsonify(
+                           400,
+                           {"status": 400, "message": "Type is not provided"},
+                         )
+                    )
+                  };
+                | _ =>
+                  Response.(
+                    res
+                    |> jsonify(
+                         400,
+                         {"status": 400, "message": "Not an object"},
+                       )
+                  )
+                };
+                Js.Dict.set(
+                  myMap,
+                  "id",
+                  Js.Json.number(float_of_int(List.length(offices^))),
+                );
+                offices := List.append([myMap], offices^);
                 Response.(
                   res
                   |> jsonify(
@@ -28,6 +69,7 @@ let views = ((req, res)) =>
                        {"status": 200, "message": "Data received"},
                      )
                 );
+
               | exception _ =>
                 Response.(
                   res
