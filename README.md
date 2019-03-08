@@ -1,5 +1,7 @@
 ## Ocaml-Flavored-Politico
 
+[![forthebadge](https://forthebadge.com/images/badges/built-by-hipsters.svg)](https://forthebadge.com)
+
 [![Build Status](https://travis-ci.org/Tevinthuku/Ocaml-flavored-politico.svg?branch=develop)](https://travis-ci.org/Tevinthuku/Ocaml-flavored-politico)
 
 This is the same Politico we built in bootcamp session at Andela Cycle 37
