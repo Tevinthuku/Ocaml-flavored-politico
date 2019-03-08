@@ -17,65 +17,60 @@ let views = ((req, res)) =>
       req
       ->on(
           `end_(
-            _ =>
-              switch (Js.Json.parseExn(data^)) {
-              | value =>
-                let myMap = Js.Dict.empty();
+            _ => {
+              let json =
+                try (Js.Json.parseExn(data^)) {
+                | _ => failwith("Error parsing JSON string")
+                };
 
-                switch (Js.Json.classify(value)) {
-                | Js.Json.JSONObject(a) =>
-                  switch (Js.Dict.get(a, "name")) {
-                  | Some(name) => Js.Dict.set(myMap, "name", name)
-                  | _ =>
-                    Response.(
-                      res
-                      |> jsonify(
-                           400,
-                           {"status": 400, "message": "Name is not provided"},
-                         )
-                    )
-                  };
+              switch (Js.Json.classify(json)) {
+              | Js.Json.JSONObject(json) =>
+                switch (
+                  Utils.getString(json, "name"),
+                  Utils.getString(json, "type"),
+                ) {
+                | (Ok(name), Ok(type_)) =>
+                  let newOffice = Js.Dict.empty();
+                  Js.Dict.set(newOffice, "name", Js.Json.string(name));
+                  Js.Dict.set(newOffice, "type", Js.Json.string(type_));
+                  Js.Dict.set(
+                    newOffice,
+                    "id",
+                    Js.Json.number(float_of_int(List.length(offices^))),
+                  );
+                  offices := List.append([newOffice], offices^);
 
-                  switch (Js.Dict.get(a, "type")) {
-                  | Some(type_) => Js.Dict.set(myMap, "type", type_)
-                  | _ =>
-                    Response.(
-                      res
-                      |> jsonify(
-                           400,
-                           {"status": 400, "message": "Type is not provided"},
-                         )
-                    )
-                  };
-                | _ =>
+                  Response.(
+                    res
+                    |> jsonify(
+                         200,
+                         {"status": 200, "message": "Data received"},
+                       )
+                  );
+                | (Error, _) =>
                   Response.(
                     res
                     |> jsonify(
                          400,
-                         {"status": 400, "message": "Not an object"},
+                         {"status": 400, "message": "Name is not provided"},
                        )
                   )
-                };
-                Js.Dict.set(
-                  myMap,
-                  "id",
-                  Js.Json.number(float_of_int(List.length(offices^))),
-                );
-                offices := List.append([myMap], offices^);
-                Response.(
-                  res
-                  |> jsonify(
-                       200,
-                       {"status": 200, "message": "Data received"},
-                     )
-                );
-
-              | exception _ =>
+                | (_, Error) =>
+                  Response.(
+                    res
+                    |> jsonify(
+                         400,
+                         {"status": 400, "message": "Type is not provided"},
+                       )
+                  )
+                }
+              | _ =>
                 Response.(
                   res
                   |> jsonify(400, {"status": 400, "message": "Bad request"})
                 )
-              },
+              };
+            },
           ),
         )
     );
