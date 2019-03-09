@@ -13,6 +13,14 @@ external strDecode:
 
 let newdecoder = strDecode(`utf8);
 
+let replacepath: string => string = [%bs.raw
+  {|
+function (str) {
+ return str.replace(/^\/+|\/+$/g, '');
+}
+|}
+];
+
 type result('a) =
   | Ok('a)
   | Error;
@@ -26,3 +34,27 @@ let getString = (a, prop) =>
     }
   | _ => Error
   };
+
+let getInt = (a, prop) =>
+  switch (Js.Dict.get(a, prop)) {
+  | Some(value) =>
+    switch (Js.Json.classify(value)) {
+    | Js.Json.JSONNumber(value) => Ok(value)
+    | _ => Error
+    }
+  | _ => Error
+  };
+
+let isRouteDynamic = (route, expect) =>
+  switch (Js.String.split("/", route)) {
+  | n when Array.length(n) > 1 && expect == n[0] => true
+  | _ => false
+  };
+
+let getParam: string => string = [%bs.raw
+  {|
+    function (route) {
+      return route.split("/")[1]
+    }
+  |}
+];
