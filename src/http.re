@@ -46,3 +46,5 @@ module Response = {
 external createServer: ((Request.t, Response.t) => unit) => http = "";
 
 [@bs.send.pipe: http] external listen: int => unit = "";
+
+[@bs.module "url"] external parse: (string, bool) => string = "";

@@ -4,11 +4,12 @@ open Utils;
 
 let offices = ref([]);
 
-let views = ((req, res)) =>
-  switch (Request.url(req)) {
-  | "/offices" when Request.isMethod(req, "GET") =>
+let views = ((req, res)) => {
+  let path = Request.url(req)->Utils.replacepath;
+  switch (path) {
+  | "offices" when Request.isMethod(req, "GET") =>
     Response.(res |> jsonify(200, {"status": 200, "data": offices^}))
-  | "/offices" when Request.isMethod(req, "POST") =>
+  | "offices" when Request.isMethod(req, "POST") =>
     let data = ref("");
     Request.(
       req->on(`data(value => data := data^ ++ write(newdecoder, value)))
@@ -31,12 +32,12 @@ let views = ((req, res)) =>
                 ) {
                 | (Ok(name), Ok(type_)) =>
                   let newOffice = Js.Dict.empty();
-                  Js.Dict.set(newOffice, "name", Js.Json.string(name));
-                  Js.Dict.set(newOffice, "type", Js.Json.string(type_));
+                  Js.Dict.set(newOffice, "name", name);
+                  Js.Dict.set(newOffice, "type", type_);
                   Js.Dict.set(
                     newOffice,
                     "id",
-                    Js.Json.number(float_of_int(List.length(offices^))),
+                    string_of_int(List.length(offices^)),
                   );
                   offices := List.append([newOffice], offices^);
 
@@ -74,6 +75,23 @@ let views = ((req, res)) =>
           ),
         )
     );
+  | dynamicofficepath
+      when
+        Request.isMethod(req, "GET")
+        && Utils.isRouteDynamic(dynamicofficepath, "offices") =>
+    let f = json =>
+      switch (Js.Dict.get(json, "id"), Utils.getParam(dynamicofficepath)) {
+      | (Some(id), dyn) when id == dyn => true
+      | (_, _) => false
+      };
+
+    switch (List.find(f, offices^)) {
+    | item =>
+      Response.(res |> jsonify(200, {"status": 200, "data": [item]}))
+    | exception Not_found =>
+      Response.(res |> jsonify(404, {"status": 404, "message": "Not found"}))
+    };
 
   | route => Response.(res |> end_(route))
   };
+};
