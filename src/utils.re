@@ -23,16 +23,16 @@ function (str) {
 
 type result('a) =
   | Ok('a)
-  | Error;
+  | Error(string);
 
 let getString = (a, prop) =>
   switch (Js.Dict.get(a, prop)) {
   | Some(value) =>
     switch (Js.Json.classify(value)) {
     | Js.Json.JSONString(value) => Ok(value)
-    | _ => Error
+    | _ => Error(prop ++ " is not a string")
     }
-  | _ => Error
+  | _ => Error("Please provide " ++ prop)
   };
 
 let getInt = (a, prop) =>
@@ -40,9 +40,9 @@ let getInt = (a, prop) =>
   | Some(value) =>
     switch (Js.Json.classify(value)) {
     | Js.Json.JSONNumber(value) => Ok(value)
-    | _ => Error
+    | _ => Error(prop ++ " is not a number")
     }
-  | _ => Error
+  | _ => Error("Please provide " ++ prop)
   };
 
 let isRouteDynamic = (route, expect) =>
