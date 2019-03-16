@@ -48,20 +48,20 @@ let views = ((req, res)) => {
                          {"status": 200, "message": "Data received"},
                        )
                   );
-                | (Error, _) =>
+                | (Error(namefailurereason), _) =>
                   Response.(
                     res
                     |> jsonify(
                          400,
-                         {"status": 400, "message": "Name is not provided"},
+                         {"status": 400, "message": namefailurereason},
                        )
                   )
-                | (_, Error) =>
+                | (_, Error(typefailurereason)) =>
                   Response.(
                     res
                     |> jsonify(
                          400,
-                         {"status": 400, "message": "Type is not provided"},
+                         {"status": 400, "message": typefailurereason},
                        )
                   )
                 }
