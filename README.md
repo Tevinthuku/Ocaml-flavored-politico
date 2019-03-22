@@ -65,9 +65,8 @@ yarn watch
 
 ### 5. Editor
 
-If you use `vscode`, Press `Windows + Shift + B` it will build automatically
-
-or install
+If you use `vscode` install
+[Jared Forsyth's VSCode extension](https://github.com/jaredly/reason-language-server)
 
 ### 6. Signature files.
 
@@ -76,5 +75,3 @@ If you want to generate signature files run
 ```
 source generatesiggy.sh
 ```
-
-[Jared Forsyth's VSCode extension](https://github.com/jaredly/reason-language-server)
