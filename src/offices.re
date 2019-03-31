@@ -24,19 +24,17 @@ let createOffice = (req, res) => {
 
             switch (Js.Json.classify(json)) {
             | Js.Json.JSONObject(json) =>
-              switch (
-                Utils.getString(json, "name"),
-                Utils.getString(json, "type"),
-              ) {
-              | (Ok(name), Ok(type_)) =>
-                let newOffice = Js.Dict.empty();
-                Js.Dict.set(newOffice, "name", name);
-                Js.Dict.set(newOffice, "type", type_);
-                Js.Dict.set(
-                  newOffice,
-                  "id",
-                  string_of_int(List.length(offices^)),
-                );
+              switch (Utils.getStringResultsFromList(json, ["name", "type"])) {
+              | [Ok(name), Ok(type_)] =>
+                let newOffice =
+                  Utils.createNewDict([
+                    (Key("name"), Value(name)),
+                    (Key("type"), Value(type_)),
+                    (
+                      Key("id"),
+                      Value(Utils.getStringListLength(offices^)),
+                    ),
+                  ]);
                 offices := List.append([newOffice], offices^);
 
                 Response.(
@@ -46,7 +44,7 @@ let createOffice = (req, res) => {
                        {"status": 200, "message": "Data received"},
                      )
                 );
-              | (Error(namefailurereason), _) =>
+              | [Error(namefailurereason), _] =>
                 Response.(
                   res
                   |> jsonify(
@@ -54,12 +52,24 @@ let createOffice = (req, res) => {
                        {"status": 400, "message": namefailurereason},
                      )
                 )
-              | (_, Error(typefailurereason)) =>
+              | [_, Error(typefailurereason)] =>
                 Response.(
                   res
                   |> jsonify(
                        400,
                        {"status": 400, "message": typefailurereason},
+                     )
+                )
+
+              | _ =>
+                Response.(
+                  res
+                  |> jsonify(
+                       400,
+                       {
+                         "status": 400,
+                         "message": "Something went terribly wrong",
+                       },
                      )
                 )
               }
